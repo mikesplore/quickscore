@@ -32,25 +32,50 @@ export function ApplicationProgress() {
   return (
     <nav aria-label="Progress">
       <ol role="list" className="space-y-4 md:flex md:space-x-8 md:space-y-0">
-        {steps.map((step, stepIdx) => (
-          <li key={step.name} className="md:flex-1">
-            {stepIdx <= currentStepIndex ? (
-              <Link
-                href={step.href}
-                className="group flex flex-col border-l-4 border-primary py-2 pl-4 hover:border-primary-dark md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
-                aria-current={stepIdx === currentStepIndex ? 'step' : undefined}
-              >
-                <span className="text-sm font-medium text-primary">{step.name}</span>
-                <span className="text-sm font-medium text-muted-foreground">Step {stepIdx + 1}</span>
-              </Link>
-            ) : (
-              <div className="group flex flex-col border-l-4 border-border py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
-                <span className="text-sm font-medium text-muted-foreground">{step.name}</span>
-                <span className="text-sm font-medium text-muted-foreground">Step {stepIdx + 1}</span>
-              </div>
-            )}
-          </li>
-        ))}
+        {steps.map((step, stepIdx) => {
+          const StepIcon = step.icon;
+          const isCompleted = stepIdx < currentStepIndex;
+          const isCurrent = stepIdx === currentStepIndex;
+          const isAccessible = stepIdx <= currentStepIndex;
+          
+          return (
+            <li key={step.name} className="md:flex-1">
+              {isAccessible ? (
+                <Link
+                  href={step.href}
+                  className={cn(
+                    "group flex flex-col border-l-4 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4",
+                    isCurrent ? "border-primary" : isCompleted ? "border-green-500" : "border-border"
+                  )}
+                  aria-current={isCurrent ? 'step' : undefined}
+                >
+                  <div className="flex items-center gap-2">
+                    {isCompleted ? (
+                      <Check className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <StepIcon className={cn("w-4 h-4", isCurrent ? "text-primary" : "text-muted-foreground")} />
+                    )}
+                    <span className={cn(
+                      "text-sm font-medium",
+                      isCurrent ? "text-primary" : isCompleted ? "text-green-600" : "text-muted-foreground"
+                    )}>
+                      {step.name}
+                    </span>
+                  </div>
+                  <span className="text-xs text-muted-foreground mt-1">Step {stepIdx + 1}</span>
+                </Link>
+              ) : (
+                <div className="group flex flex-col border-l-4 border-border py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
+                  <div className="flex items-center gap-2">
+                    <StepIcon className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm font-medium text-muted-foreground">{step.name}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground mt-1">Step {stepIdx + 1}</span>
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </nav>
   );

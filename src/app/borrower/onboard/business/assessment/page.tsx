@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import Link from 'next/link';
-import { CheckCircle, TrendingUp, DollarSign, Percent, Clock, BarChart3 } from 'lucide-react';
+import { CheckCircle, TrendingUp, DollarSign, Percent, Clock, BarChart3, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function BusinessAssessmentPage() {
+  const router = useRouter();
   // Mock assessment data
   const assessment = {
     businessName: 'Tech Solutions Kenya Ltd',
@@ -59,6 +61,18 @@ export default function BusinessAssessmentPage() {
 
   return (
     <div className="space-y-8">
+      {/* Back Button */}
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push('/borrower/onboard/business/documents')}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Documents
+        </Button>
+      </div>
+
       {/* Success Card */}
       <Card className="border-yellow-200 bg-yellow-50">
         <CardContent className="pt-8 pb-8">
@@ -207,27 +221,20 @@ export default function BusinessAssessmentPage() {
         </CardContent>
       </Card>
 
-      {/* Recommended Next Steps */}
+      {/* Success Message & Next Steps */}
       <Card>
         <CardHeader>
-          <CardTitle>What's Next?</CardTitle>
+          <CardTitle>🎉 Congratulations!</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            Your assessment is {assessment.status === 'APPROVED' ? 'complete and approved' : assessment.status === 'CONDITIONALLY_APPROVED' ? 'pending final conditions' : 'under review by our team'}.
+            Your business onboarding is complete! Your assessment is {assessment.status === 'APPROVED' ? 'approved and ready' : assessment.status === 'CONDITIONALLY_APPROVED' ? 'pending final conditions' : 'under review by our team'}. You can now explore available business loans.
           </p>
-          <div className="space-y-3">
-            <Button asChild className="w-full" size="lg">
-              <Link href="/borrower/dashboard">
-                View Available Loans
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full" size="lg">
-              <Link href="/borrower/dashboard">
-                Go to My Dashboard
-              </Link>
-            </Button>
-          </div>
+          <Button asChild className="w-full" size="lg">
+            <Link href="/business-borrower/dashboard">
+              Go to My Dashboard
+            </Link>
+          </Button>
         </CardContent>
       </Card>
 

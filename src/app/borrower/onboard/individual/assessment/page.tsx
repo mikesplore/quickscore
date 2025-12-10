@@ -4,9 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import Link from 'next/link';
-import { CheckCircle, TrendingUp, DollarSign, Percent, Clock } from 'lucide-react';
+import { CheckCircle, TrendingUp, DollarSign, Percent, Clock, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function IndividualAssessmentPage() {
+  const router = useRouter();
+  
   // Mock assessment data
   const assessment = {
     creditScore: 72,
@@ -50,6 +53,18 @@ export default function IndividualAssessmentPage() {
 
   return (
     <div className="space-y-8">
+      {/* Back Button */}
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push('/borrower/onboard/individual/details')}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Details
+        </Button>
+      </div>
+
       {/* Success Card */}
       <Card className="border-green-200 bg-green-50">
         <CardContent className="pt-8 pb-8">
@@ -154,27 +169,20 @@ export default function IndividualAssessmentPage() {
         </CardContent>
       </Card>
 
-      {/* Recommended Next Steps */}
+      {/* Success Message & Next Steps */}
       <Card>
         <CardHeader>
-          <CardTitle>What's Next?</CardTitle>
+          <CardTitle>🎉 Congratulations!</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            Now that your assessment is complete, you can explore available loans and apply.
+            Your onboarding is complete! Now that your assessment is ready, you can explore available loans and apply.
           </p>
-          <div className="space-y-3">
-            <Button asChild className="w-full" size="lg">
-              <Link href="/borrower/dashboard">
-                View Available Loans
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full" size="lg">
-              <Link href="/borrower/dashboard">
-                Go to My Dashboard
-              </Link>
-            </Button>
-          </div>
+          <Button asChild className="w-full" size="lg">
+            <Link href="/borrower/dashboard">
+              Go to My Dashboard
+            </Link>
+          </Button>
         </CardContent>
       </Card>
 

@@ -5,14 +5,28 @@ import { cn } from '@/lib/utils';
 import { UserCheck, Wallet, FileText, Check } from 'lucide-react';
 import Link from 'next/link';
 
-const steps = [
-  { name: 'Identity', href: '/apply/identity', icon: UserCheck },
-  { name: 'Financials', href: '/apply/financials', icon: Wallet },
-  { name: 'Details', href: '/apply/details', icon: FileText },
+const individualSteps = [
+  { name: 'Identity', href: '/borrower/onboard/individual/identity', icon: UserCheck },
+  { name: 'Financials', href: '/borrower/onboard/individual/financials', icon: Wallet },
+  { name: 'Details', href: '/borrower/onboard/individual/details', icon: FileText },
+  { name: 'Assessment', href: '/borrower/onboard/individual/assessment', icon: Check },
+];
+
+const businessSteps = [
+  { name: 'Business Info', href: '/borrower/onboard/business/info', icon: FileText },
+  { name: 'Representative', href: '/borrower/onboard/business/representative', icon: UserCheck },
+  { name: 'Financials', href: '/borrower/onboard/business/financials', icon: Wallet },
+  { name: 'Documents', href: '/borrower/onboard/business/documents', icon: FileText },
+  { name: 'Assessment', href: '/borrower/onboard/business/assessment', icon: Check },
 ];
 
 export function ApplicationProgress() {
   const pathname = usePathname();
+  
+  // Determine which step set to use based on current path
+  const isBusinessPath = pathname?.includes('/business/');
+  const steps = isBusinessPath ? businessSteps : individualSteps;
+  
   const currentStepIndex = steps.findIndex(step => pathname === step.href);
 
   return (

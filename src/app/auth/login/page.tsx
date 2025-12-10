@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,39 @@ import { Logo } from "@/components/shared/Logo";
 import Link from "next/link";
 
 export default function AuthLoginPage() {
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    
+    // TODO: Implement actual login authentication
+    // After authentication, fetch user's role from database
+    
+    // Mock: Simulate fetching user data with their saved role
+    const mockUser = {
+      email: 'user@example.com',
+      role: 'individual', // This should come from database: 'individual' | 'business' | 'lender'
+    };
+
+    // Redirect based on their EXISTING role (already set during signup)
+    switch (mockUser.role) {
+      case 'individual':
+        window.location.href = '/borrower/dashboard';
+        break;
+      case 'business':
+        window.location.href = '/borrower/dashboard'; // or /business/dashboard if separate
+        break;
+      case 'lender':
+        window.location.href = '/lender/dashboard';
+        break;
+      default:
+        // If somehow they don't have a role (shouldn't happen), send to role selection
+        window.location.href = '/auth/role-selection';
+    }
+    
+    setLoading(false);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="flex flex-col items-center w-full max-w-sm p-4">
@@ -29,8 +63,12 @@ export default function AuthLoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button className="w-full">
-                Sign In
+            <Button 
+              className="w-full" 
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
             <div className="text-sm text-center text-muted-foreground space-y-2">
                 <p>

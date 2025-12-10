@@ -5,9 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Logo } from '@/components/shared/Logo';
 import Link from 'next/link';
 import { Users, Building2, DollarSign, ArrowRight } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export default function RoleSelectionPage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+
+  // This page should ONLY be shown during sign-up, not login
+  // When user selects a role, it should be saved to their profile
 
   const roles = [
     {
@@ -40,13 +45,16 @@ export default function RoleSelectionPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="p-4 md:p-6 border-b">
-        <Logo />
-      </header>
-
+    <>
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-4xl">
+          <Alert className="mb-8">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <strong>One-time setup:</strong> Choose your account type. This will determine which features you have access to.
+            </AlertDescription>
+          </Alert>
+
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold font-headline mb-3">Who are you?</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -114,6 +122,6 @@ export default function RoleSelectionPage() {
       <footer className="p-4 text-center text-sm text-muted-foreground border-t">
         <p>LenderVision &copy; {new Date().getFullYear()}</p>
       </footer>
-    </div>
+    </>
   );
 }

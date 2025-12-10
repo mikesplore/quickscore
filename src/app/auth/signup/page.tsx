@@ -31,7 +31,8 @@ export default function SignUpPage() {
     setLoading(true);
     // TODO: Implement OTP verification
     console.log('Verifying OTP:', otp);
-    // On success, go to role selection
+    // IMPORTANT: During SIGN-UP, go to role selection to set user role
+    // This role is saved to the user's profile
     window.location.href = '/auth/role-selection';
     setLoading(false);
   };
@@ -40,7 +41,8 @@ export default function SignUpPage() {
     setLoading(true);
     // TODO: Implement email sign-up
     console.log('Creating account with email:', email);
-    // On success, go to role selection
+    // IMPORTANT: During SIGN-UP, go to role selection to set user role
+    // This role is saved to the user's profile
     window.location.href = '/auth/role-selection';
     setLoading(false);
   };

@@ -7,9 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/shared/Logo';
 import Link from 'next/link';
 import { ArrowRight, Users, Building2, DollarSign } from 'lucide-react';
+import { signUpWithEmail } from '@/lib/auth';
+import { createUserProfile } from '@/lib/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function SignUpPage() {
-  const [signupMethod, setSignupMethod] = useState<'phone' | 'email'>('phone');
+  const router = useRouter();
+  const { toast } = useToast();
+  const [signupMethod, setSignupMethod] = useState<'phone' | 'email'>('email');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -26,7 +32,7 @@ export default function SignUpPage() {
       icon: Users,
       description: 'Get a personal loan based on your financial activity',
       color: 'text-blue-600',
-      onboardingPath: '/borrower/onboard/individual/identity',
+      onboardingPath: '/borrower/dashboard',
     },
     {
       id: 'business',
@@ -34,7 +40,7 @@ export default function SignUpPage() {
       icon: Building2,
       description: 'Grow your business with tailored financing',
       color: 'text-green-600',
-      onboardingPath: '/borrower/onboard/business/info',
+      onboardingPath: '/borrower/dashboard',
     },
     {
       id: 'lender',
@@ -42,7 +48,7 @@ export default function SignUpPage() {
       icon: DollarSign,
       description: 'Fund loans and earn competitive returns',
       color: 'text-purple-600',
-      onboardingPath: '/lender/onboard/info',
+      onboardingPath: '/lender/dashboard',
     },
   ];
 
@@ -52,10 +58,22 @@ export default function SignUpPage() {
   };
 
   const handlePhoneSubmit = async () => {
+    if (!phoneNumber) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter your phone number.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
-    // TODO: Implement phone OTP send
-    console.log('Sending OTP to:', phoneNumber);
-    setStep('otp');
+    // TODO: Implement phone OTP authentication
+    toast({
+      title: "Feature Not Available",
+      description: "Phone authentication is coming soon. Please use email signup.",
+      variant: "destructive",
+    });
     setLoading(false);
   };
 
@@ -63,18 +81,73 @@ export default function SignUpPage() {
     setLoading(true);
     // TODO: Implement OTP verification
     console.log('Verifying OTP:', otp);
-    // TODO: Save userRole to database with account
-    window.location.href = getOnboardingPath();
     setLoading(false);
   };
 
   const handleEmailSignup = async () => {
+    if (!email || !password || !confirmPassword) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: "Weak Password",
+        description: "Password must be at least 6 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!userRole) {
+      toast({
+        title: "Role Required",
+        description: "Please select a role.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
-    // TODO: Implement email sign-up
-    console.log('Creating account with email:', email);
-    // TODO: Save userRole to database with account
-    window.location.href = getOnboardingPath();
-    setLoading(false);
+    try {
+      const userCredential = await signUpWithEmail(email, password);
+      
+      // Create user profile in Firestore
+      await createUserProfile(userCredential.user.uid, {
+        email,
+        role: userRole,
+        uid: userCredential.user.uid,
+      });
+
+      toast({
+        title: "Account Created",
+        description: "Welcome to QuickScore!",
+      });
+
+      // Redirect to appropriate dashboard
+      router.push(getOnboardingPath());
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
   };
 
   return (

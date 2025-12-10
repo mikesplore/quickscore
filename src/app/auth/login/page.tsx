@@ -9,6 +9,9 @@ import { Logo } from "@/components/shared/Logo";
 import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Badge } from "@/components/ui/badge";
+import { signInWithEmail } from "@/lib/auth";
+import { getUserProfile } from "@/lib/firestore";
+import { useToast } from "@/hooks/use-toast";
 
 const roleLabels: Record<string, string> = {
   individual: 'Individual Borrower',
@@ -19,6 +22,7 @@ const roleLabels: Record<string, string> = {
 export default function AuthLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const roleParam = searchParams.get('role') || 'individual';
   const selectedRole = ['individual', 'business', 'lender'].includes(roleParam) ? roleParam : 'individual';
 
@@ -27,22 +31,52 @@ export default function AuthLoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    setLoading(true);
-    // TODO: Replace with real authentication + role fetch
-    const role = selectedRole;
-
-    switch (role) {
-      case 'individual':
-      case 'business':
-        router.push('/borrower/dashboard');
-        break;
-      case 'lender':
-        router.push('/lender/dashboard');
-        break;
-      default:
-        router.push('/');
+    if (!email || !password) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      return;
     }
-    setLoading(false);
+
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmail(email, password);
+      const userProfile = await getUserProfile(userCredential.user.uid);
+
+      if (!userProfile) {
+        toast({
+          title: "Profile Not Found",
+          description: "User profile doesn't exist. Please contact support.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Redirect based on user's role
+      const role = userProfile.role;
+      switch (role) {
+        case 'individual':
+        case 'business':
+          router.push('/borrower/dashboard');
+          break;
+        case 'lender':
+          router.push('/lender/dashboard');
+          break;
+        default:
+          router.push('/');
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        title: "Login Failed",
+        description: error.message || "Invalid credentials. Please try again.",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,11 +93,11 @@ export default function AuthLoginPage() {
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email or Phone</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                type="text"
-                placeholder="m@example.com or +254712345678"
+                type="email"
+                placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -100,3 +134,5 @@ export default function AuthLoginPage() {
     </div>
   );
 }
+
+  

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/shared/Logo";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function AuthLoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="flex flex-col items-center w-full max-w-sm p-4">

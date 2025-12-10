@@ -70,7 +70,7 @@ export default function BorrowerDashboard() {
               <p className="text-slate-600 mb-6 max-w-md">
                 You haven't completed your profile yet. Complete your profile to receive personalized loan recommendations and eligibility assessment.
               </p>
-              <Link href="/borrower/apply/identity">
+              <Link href="/borrower/onboard/individual/identity">
                 <Button size="lg">
                   Complete Your Profile
                 </Button>

@@ -46,18 +46,18 @@ export default function IdentityPage() {
         <CardContent className="space-y-6">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="relative w-64 h-64">
-              {livenessImage && (
-                 <Image
-                    src={livenessImage.imageUrl}
-                    alt={livenessImage.description}
-                    data-ai-hint={livenessImage.imageHint}
-                    width={256}
-                    height={256}
-                    className="rounded-full object-cover border-4 border-muted"
-                  />
-              )}
-              <div className="absolute inset-0 rounded-full border-4 border-dashed border-primary animate-pulse flex items-center justify-center">
-                 {!livenessComplete && <Camera className="w-16 h-16 text-primary/30" />}
+              <div className="absolute inset-0 rounded-full border-4 border-dashed border-primary animate-pulse flex items-center justify-center overflow-hidden">
+                {livenessImage && (
+                   <Image
+                      src={livenessImage.imageUrl}
+                      alt={livenessImage.description}
+                      data-ai-hint={livenessImage.imageHint}
+                      width={256}
+                      height={256}
+                      className="rounded-full object-cover"
+                    />
+                )}
+                 {!livenessComplete && !livenessImage && <Camera className="w-16 h-16 text-primary/30" />}
               </div>
             </div>
             <div className="flex-1 text-center md:text-left">

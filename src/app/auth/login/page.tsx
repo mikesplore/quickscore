@@ -9,8 +9,6 @@ import { Logo } from "@/components/shared/Logo";
 import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Badge } from "@/components/ui/badge";
-import { signInWithEmail } from "@/lib/auth";
-import { getUserProfile } from "@/lib/firestore";
 import { useToast } from "@/hooks/use-toast";
 
 const roleLabels: Record<string, string> = {
@@ -30,7 +28,7 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (!email || !password) {
       toast({
         title: "Missing Information",
@@ -41,26 +39,16 @@ function LoginForm() {
     }
 
     setLoading(true);
-    try {
-      const userCredential = await signInWithEmail(email, password);
-      const userProfile = await getUserProfile(userCredential.user.uid);
-
-      if (!userProfile) {
-        toast({
-          title: "Profile Not Found",
-          description: "User profile doesn't exist. Please contact support.",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Redirect based on user's role
-      const role = userProfile.role;
-      switch (role) {
+    
+    // Simulate login delay
+    setTimeout(() => {
+      // Route based on selected role
+      switch (selectedRole) {
         case 'individual':
-        case 'business':
           router.push('/borrower/dashboard');
+          break;
+        case 'business':
+          router.push('/business-borrower/dashboard');
           break;
         case 'lender':
           router.push('/lender/dashboard');
@@ -68,15 +56,12 @@ function LoginForm() {
         default:
           router.push('/');
       }
-    } catch (error: any) {
-      console.error("Login error:", error);
+      
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid credentials. Please try again.",
-        variant: "destructive",
+        title: "Login Successful",
+        description: `Welcome back, ${roleLabels[selectedRole]}!`,
       });
-      setLoading(false);
-    }
+    }, 1000);
   };
 
   return (

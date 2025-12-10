@@ -7,8 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/shared/Logo';
 import Link from 'next/link';
 import { ArrowRight, Users, Building2, DollarSign } from 'lucide-react';
-import { signUpWithEmail } from '@/lib/auth';
-import { createUserProfile } from '@/lib/firestore';
+
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -122,32 +121,24 @@ export default function SignUpPage() {
     }
 
     setLoading(true);
-    try {
-      const userCredential = await signUpWithEmail(email, password);
-      
-      // Create user profile in Firestore
-      await createUserProfile(userCredential.user.uid, {
-        email,
-        role: userRole,
-        uid: userCredential.user.uid,
-      });
-
+    
+    // Simulate account creation for prototype
+    setTimeout(() => {
       toast({
         title: "Account Created",
         description: "Welcome to QuickScore!",
       });
 
-      // Redirect to appropriate dashboard
-      router.push(getOnboardingPath());
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      toast({
-        title: "Signup Failed",
-        description: error.message || "Failed to create account. Please try again.",
-        variant: "destructive",
-      });
-      setLoading(false);
-    }
+      // Redirect to appropriate dashboard based on role
+      let dashboardPath = '/borrower/dashboard';
+      if (userRole === 'business') {
+        dashboardPath = '/business-borrower/dashboard';
+      } else if (userRole === 'lender') {
+        dashboardPath = '/lender/dashboard';
+      }
+      
+      router.push(dashboardPath);
+    }, 1000);
   };
 
   return (

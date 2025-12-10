@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Logo } from '@/components/shared/Logo';
 import Link from 'next/link';
-import { signInWithEmail } from '@/lib/auth';
-import { getUserProfile } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 
 const roleLabels: Record<string, string> = {
@@ -29,7 +27,7 @@ function LoginCredentialsForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (!email || !password) {
       toast({
         title: "Missing Information",
@@ -40,33 +38,24 @@ function LoginCredentialsForm() {
     }
 
     setLoading(true);
-    try {
-      const userCredential = await signInWithEmail(email, password);
-      const userProfile = await getUserProfile(userCredential.user.uid);
-
-      if (!userProfile) {
-        toast({
-          title: "Profile Not Found",
-          description: "User profile doesn't exist. Please contact support.",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
+    
+    // Simulate login delay
+    setTimeout(() => {
+      // Route based on selected role
+      let target = '/borrower/dashboard';
+      if (role === 'lender') {
+        target = '/lender/dashboard';
+      } else if (role === 'business') {
+        target = '/business-borrower/dashboard';
       }
-
-      // Redirect based on user's role
-      const userRole = userProfile.role;
-      const target = userRole === 'lender' ? '/lender/dashboard' : '/borrower/dashboard';
-      router.push(target);
-    } catch (error: any) {
-      console.error("Login error:", error);
+      
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid credentials. Please try again.",
-        variant: "destructive",
+        title: "Login Successful",
+        description: `Welcome back, ${roleLabel}!`,
       });
-      setLoading(false);
-    }
+      
+      router.push(target);
+    }, 1000);
   };
 
   return (

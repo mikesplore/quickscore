@@ -53,7 +53,7 @@ export default function Home() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-slate-600 text-white hover:bg-slate-800">
-                  <Link href="/auth/login-flow">Sign In</Link>
+                  <Link href="/borrower/onboard/individual/assessment">Digital Assessment</Link>
                 </Button>
               </div>
 

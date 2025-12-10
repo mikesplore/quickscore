@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { LenderSidebar } from "@/components/lender/LenderSidebar";
+import { BusinessBorrowerSidebar } from "@/components/borrower/BusinessBorrowerSidebar";
 
-export default function LenderLayout({
+export default function BusinessBorrowerDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ export default function LenderLayout({
   return (
     <div className="bg-white min-h-screen">
       <SidebarProvider>
-        <LenderSidebar />
+        <BusinessBorrowerSidebar />
         <SidebarInset>
           {children}
         </SidebarInset>

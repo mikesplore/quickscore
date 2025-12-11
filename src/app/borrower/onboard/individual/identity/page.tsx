@@ -230,14 +230,15 @@ export default function IndividualIdentityPage() {
       {/* Next Button */}
       <div className="flex justify-end mt-8">
         <Button 
-          asChild 
           size="lg" 
           disabled={!canContinue}
           className="group"
+          onClick={() => {
+            sessionStorage.setItem('identityComplete', 'true');
+            window.location.href = '/borrower/onboard/individual/details';
+          }}
         >
-          <Link href="/borrower/onboard/individual/details">
-            Next Step <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          Next Step <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
         </Button>
       </div>
     </div>

@@ -21,7 +21,8 @@ export default function IndividualFinancialsPage() {
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
-      // Proceed to success screen
+      // Mark financials as complete and proceed to assessment
+      sessionStorage.setItem('financialsComplete', 'true');
       window.location.href = '/borrower/onboard/individual/assessment';
     }, 2000);
   };
@@ -190,10 +191,14 @@ export default function IndividualFinancialsPage() {
             <p className="text-sm text-muted-foreground mb-3">
               Want to skip for now? We'll still generate an assessment, but with limited data.
             </p>
-            <Button variant="ghost" asChild>
-              <Link href="/borrower/onboard/individual/assessment">
-                Skip and Continue
-              </Link>
+            <Button 
+              variant="ghost" 
+              onClick={() => {
+                sessionStorage.setItem('financialsComplete', 'true');
+                window.location.href = '/borrower/onboard/individual/assessment';
+              }}
+            >
+              Skip and Continue
             </Button>
           </div>
         </CardContent>

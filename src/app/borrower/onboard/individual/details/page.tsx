@@ -208,10 +208,15 @@ export default function IndividualDetailsPage() {
             Back
           </Link>
         </Button>
-        <Button asChild size="lg" className="group">
-          <Link href="/borrower/onboard/individual/financials">
-            Next Step <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
+        <Button 
+          size="lg" 
+          className="group"
+          onClick={() => {
+            sessionStorage.setItem('detailsComplete', 'true');
+            window.location.href = '/borrower/onboard/individual/financials';
+          }}
+        >
+          Next Step <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
         </Button>
       </div>
     </div>

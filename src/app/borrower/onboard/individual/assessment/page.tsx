@@ -11,8 +11,15 @@ import { useEffect } from 'react';
 export default function IndividualAssessmentPage() {
   const router = useRouter();
   
-  // Redirect to first step if assessment data is not present
+  // Redirect to first step if assessment data is not present (only on first mount)
   useEffect(() => {
+    const hasCompletedAssessment = sessionStorage.getItem('assessmentComplete');
+    
+    // If assessment was already completed, don't check other steps
+    if (hasCompletedAssessment) {
+      return;
+    }
+    
     const hasCompletedIdentity = sessionStorage.getItem('identityComplete');
     const hasCompletedDetails = sessionStorage.getItem('detailsComplete');
     const hasCompletedFinancials = sessionStorage.getItem('financialsComplete');
@@ -20,6 +27,9 @@ export default function IndividualAssessmentPage() {
     // If user hasn't completed the previous steps, redirect to identity
     if (!hasCompletedIdentity || !hasCompletedDetails || !hasCompletedFinancials) {
       router.push('/borrower/onboard/individual/identity');
+    } else {
+      // Mark assessment as complete
+      sessionStorage.setItem('assessmentComplete', 'true');
     }
   }, [router]);
   
